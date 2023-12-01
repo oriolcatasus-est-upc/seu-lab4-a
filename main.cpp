@@ -5,26 +5,29 @@ CAN can(p30, p29);
 
 CANMessage msg;
 
-// main() runs in its own thread in the OS
+
 int main()
 {
     pc.printf("Starting program...\r\n");
     can.mode(CAN::Normal);
     can.frequency(500*1000); // 500Kbps
+
     while (true) {
         if (can.read(msg)) {
-            pc.printf("Message received: ");
+            pc.printf("Message received!\r\n");
+            pc.printf("ID: %d\r\n", msg.id);
+            pc.printf("Data: ");
             for (int i = 0; i < sizeof(msg.data); ++i) {
                 pc.printf("%d", msg.data[i]);
             }
             pc.printf("\r\n");
-            char test[] = "Hola";
+            /*char respText[] = "Hola";
             CANMessage resp;
             resp.id = 1337;
-            resp.len = sizeof(test);
-            memcpy(resp.data, test, resp.len);
-            if (can.write(resp)) {
-                pc.printf("Message sent!!\r\n");
+            resp.len = sizeof(respText);
+            memcpy(resp.data, respText, resp.len);*/
+            if (can.write(msg)) {
+                pc.printf("Message resent!\r\n");
             }
         }
         thread_sleep_for(1);
